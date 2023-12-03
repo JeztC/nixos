@@ -13,13 +13,22 @@
     enable = true;
     lfs.enable = true;
   };
+
+    boot.extraModulePackages = with config.boot.kernelPackages; [
+    v4l2loopback
+  ];
+  boot.extraModprobeConfig = ''
+    options v4l2loopback devices=1 video_nr=1 card_label="OBS Cam" exclusive_caps=1
+  '';
+  security.polkit.enable = true;
+
   programs.steam = {
   enable = true;
   remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
   dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
 };
   hardware.opengl.driSupport32Bit = true; # Enables support for 32bit libs that steam uses
-  nixpkgs.config.pulseaudio = true;
+  #nixpkgs.config.pulseaudio = true;
   nixpkgs.config.allowUnfree = true;
   imports =
     [ # Include the results of the hardware scan.
@@ -56,8 +65,9 @@
   services.xserver.enable = true;
 
 
+  nix.settings.experimental-features = [ "nix-command" "flakes" ]; 
   
-
+  #wayland.windowManager.hyprland.plugins = [];
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
   # services.xserver.xkb.options = "eurosign:e,caps:escape";
@@ -67,7 +77,7 @@
 
   # Enable sound.
   sound.enable = true;
-  hardware.pulseaudio.enable = true;
+  #hardware.pulseaudio.enable = true;
 
   hardware.opengl = {
   enable = true;
@@ -76,15 +86,25 @@
 
   fonts.packages = with pkgs; [
   font-awesome
+  noto-fonts
+  noto-fonts-cjk
+  noto-fonts-emoji
+  vistafonts
+  corefonts
+  (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
   ];
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
+  services.openvpn.servers = {
+    officeVPN  = { config = '' config /root/nixos/openvpn/officeVPN.conf ''; };
+    homeVPN    = { config = '' config /root/nixos/openvpn/homeVPN.conf ''; };
+    serverVPN  = { config = '' config /root/nixos/openvpn/serverVPN.conf ''; };
+  };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.jesse = {
      isNormalUser = true;
-     initialPassword = "pw123";
      extraGroups = [ "wheel" "libvirtd" ]; # Enable ‘sudo’ for the user.
      packages = with pkgs; [
        firefox
@@ -93,6 +113,7 @@
        htop
        discord
        brave
+       runelite
      ];
    };
    
@@ -109,12 +130,21 @@
      vscodium
      wl-clipboard
      hyprpaper
+     hyprpicker
      udiskie
      rofi
      libreoffice-qt
      gammastep
      hunspell
      hunspellDicts.sv_FI
+     dolphin
+     jq
+     pkg-config
+     grimblast
+     obs-studio
+     mpv
+     jetbrains.clion
+     gcc
    ];
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
@@ -131,6 +161,14 @@
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
 
+  # rtkit is optional but recommended
+  security.rtkit.enable = true;
+  services.pipewire = {
+  enable = true;
+  alsa.enable = true;
+  alsa.support32Bit = true;
+  pulse.enable = true;
+  };
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
