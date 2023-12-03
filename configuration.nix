@@ -5,6 +5,7 @@
 { config, lib, pkgs, ... }:
 
 {
+  programs.thunar.enable = true;
   programs.hyprland = {
   enable = true;
   xwayland.enable = true;
@@ -63,7 +64,11 @@
   
   services.xserver.displayManager.sddm.enable = true;
   services.xserver.enable = true;
-
+  
+  # Secrets Provider
+  services.passSecretService.enable = true;
+  # Gnome Keyring
+  services.gnome.gnome-keyring.enable = true;
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ]; 
   
@@ -91,8 +96,27 @@
   noto-fonts-emoji
   vistafonts
   corefonts
+  dejavu_fonts
   (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
   ];
+
+    fonts.fontconfig.defaultFonts = {
+    monospace = [
+      "terminus"
+      "DejaVu Sans Mono"
+      "IPAGothic"
+    ];
+    sansSerif = [
+      "terminus"
+      "DejaVu Sans"
+      "IPAPGothic"
+    ];
+    serif = [
+      "terminus"
+      "DejaVu Serif"
+      "IPAPMincho"
+    ];
+  };
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
@@ -101,6 +125,7 @@
     homeVPN    = { config = '' config /root/nixos/openvpn/homeVPN.conf ''; };
     serverVPN  = { config = '' config /root/nixos/openvpn/serverVPN.conf ''; };
   };
+  services.xserver.desktopManager.plasma5.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.jesse = {
@@ -137,7 +162,7 @@
      gammastep
      hunspell
      hunspellDicts.sv_FI
-     dolphin
+     plasma5Packages.dolphin
      jq
      pkg-config
      grimblast
@@ -145,6 +170,11 @@
      mpv
      jetbrains.clion
      gcc
+     nodejs
+     wayland-scanner
+     wgnord
+     dunst
+     gnome.libgnome-keyring
    ];
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
@@ -161,6 +191,7 @@
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
 
+
   # rtkit is optional but recommended
   security.rtkit.enable = true;
   services.pipewire = {
@@ -173,7 +204,7 @@
   # networking.firewall.allowedTCPPorts = [ ... ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+  networking.firewall.enable = false;
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
