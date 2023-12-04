@@ -5,7 +5,18 @@
 { config, lib, pkgs, ... }:
 
 {
-  programs.thunar.enable = true;
+  programs.zsh.interactiveShellInit = ''
+  export ZSH=${pkgs.oh-my-zsh}/share/oh-my-zsh/
+
+  # Customize your oh-my-zsh options here
+  ZSH_THEME="dracula"
+  plugins=(git)
+
+  source $ZSH/oh-my-zsh.sh
+'';
+
+  programs.zsh.enable = true;
+  programs.zsh.promptInit = ""; # Clear this to avoid a conflict with oh-my-zsh
   programs.hyprland = {
   enable = true;
   xwayland.enable = true;
@@ -74,7 +85,8 @@
   
   #wayland.windowManager.hyprland.plugins = [];
   # Configure keymap in X11
-  # services.xserver.xkb.layout = "us";
+  services.xserver.xkb.layout = "fi";
+  services.xserver.xkbOptions = "caps:ctrl_modifier";
   # services.xserver.xkb.options = "eurosign:e,caps:escape";
 
   # Enable CUPS to print documents.
@@ -120,17 +132,19 @@
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
-  services.openvpn.servers = {
-    officeVPN  = { config = '' config /root/nixos/openvpn/officeVPN.conf ''; };
-    homeVPN    = { config = '' config /root/nixos/openvpn/homeVPN.conf ''; };
-    serverVPN  = { config = '' config /root/nixos/openvpn/serverVPN.conf ''; };
-  };
   services.xserver.desktopManager.plasma5.enable = true;
+  services.printing.enable = true;
+  
+  services.avahi = {
+  enable = true;
+  nssmdns = true;
+  openFirewall = true;
+  };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.jesse = {
      isNormalUser = true;
-     extraGroups = [ "wheel" "libvirtd" ]; # Enable ‘sudo’ for the user.
+     extraGroups = [ "wheel" "libvirtd" "adbusers" ]; # Enable ‘sudo’ for the user.
      packages = with pkgs; [
        firefox
        tree
@@ -174,7 +188,21 @@
      wayland-scanner
      wgnord
      dunst
+     libsecret
+     tutanota-desktop
      gnome.libgnome-keyring
+     ciscoPacketTracer8
+     papirus-icon-theme
+     dracula-theme
+     nwg-look
+     jmtpfs
+     godot3-mono
+     kate
+     thunderbird
+     zsh
+     oh-my-zsh
+     zsh-syntax-highlighting
+     teams-for-linux
    ];
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
@@ -186,11 +214,20 @@
   #   enableSSHSupport = true;
   # };
 
+
+  programs.adb.enable = true;
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
 
+  # vpn configurations
+  services.openvpn.servers = {
+    nordvpn_swiss373 = { config = '' config /home/jesse/ch373.nordvpn.com.tcp443.ovpn ''; };
+    #officeVPN  = { config = '' config /root/nixos/openvpn/officeVPN.conf ''; };
+    #homeVPN    = { config = '' config /root/nixos/openvpn/homeVPN.conf ''; };
+    #serverVPN  = { config = '' config /root/nixos/openvpn/serverVPN.conf ''; };
+  };
 
   # rtkit is optional but recommended
   security.rtkit.enable = true;
