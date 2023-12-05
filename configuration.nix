@@ -14,16 +14,17 @@
 
   source $ZSH/oh-my-zsh.sh
 '';
-
+  
+  programs.git = {
+  enable = true;
+  # ...
+};
+  
   programs.zsh.enable = true;
   programs.zsh.promptInit = ""; # Clear this to avoid a conflict with oh-my-zsh
   programs.hyprland = {
   enable = true;
   xwayland.enable = true;
-  };
-    programs.git = {
-    enable = true;
-    lfs.enable = true;
   };
 
     boot.extraModulePackages = with config.boot.kernelPackages; [
@@ -46,6 +47,16 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
     ];
+  
+  nixpkgs.overlays = [
+    (final: prev: {
+      steam = prev.steam.override ({ extraPkgs ? pkgs': [], ... }: {
+        extraPkgs = pkgs': (extraPkgs pkgs') ++ (with pkgs'; [
+          libgdiplus
+        ]);
+      });
+    })
+  ];
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
@@ -203,6 +214,9 @@
      oh-my-zsh
      zsh-syntax-highlighting
      teams-for-linux
+     gnome.seahorse
+     gimp
+     rofi-power-menu
    ];
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
@@ -214,11 +228,11 @@
   #   enableSSHSupport = true;
   # };
 
-
   programs.adb.enable = true;
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
+
   # services.openssh.enable = true;
 
   # vpn configurations
