@@ -89,8 +89,6 @@
   
   # Secrets Provider
   services.passSecretService.enable = true;
-  # Gnome Keyring
-  services.gnome.gnome-keyring.enable = true;
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ]; 
   
@@ -120,7 +118,12 @@
   vistafonts
   corefonts
   dejavu_fonts
-  (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" ]; })
+  fontconfig
+  twemoji-color-font
+  fira-code
+  fira-code-symbols
+  nerdfonts
+  (nerdfonts.override { fonts = [ "RobotoMono"  ]; })
   ];
 
     fonts.fontconfig.defaultFonts = {
@@ -187,6 +190,7 @@
      gammastep
      hunspell
      hunspellDicts.sv_FI
+     hunspellDicts.uk_UA
      plasma5Packages.dolphin
      jq
      pkg-config
@@ -201,7 +205,6 @@
      dunst
      libsecret
      tutanota-desktop
-     gnome.libgnome-keyring
      ciscoPacketTracer8
      papirus-icon-theme
      dracula-theme
@@ -217,6 +220,8 @@
      gnome.seahorse
      gimp
      rofi-power-menu
+     qt5ct
+     libvoikko
    ];
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
@@ -237,14 +242,19 @@
 
   # vpn configurations
   services.openvpn.servers = {
-    nordvpn_swiss373 = { config = '' config /home/jesse/ch373.nordvpn.com.tcp443.ovpn ''; };
-    #officeVPN  = { config = '' config /root/nixos/openvpn/officeVPN.conf ''; };
-    #homeVPN    = { config = '' config /root/nixos/openvpn/homeVPN.conf ''; };
-    #serverVPN  = { config = '' config /root/nixos/openvpn/serverVPN.conf ''; };
+    nordvpn_ee1194 = { config = '' config /home/jesse/vpnconfig/ee54.nordvpn.com.udp1194.ovpn ''; };
   };
+  
+  services.gvfs.enable = true;
 
   # rtkit is optional but recommended
   security.rtkit.enable = true;
+ 
+  security.pam.services.kwallet = {
+  name = "kwallet";
+  enableKwallet = true;
+  };
+
   services.pipewire = {
   enable = true;
   alsa.enable = true;
@@ -256,6 +266,8 @@
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   networking.firewall.enable = false;
+
+  fonts.fontconfig.enable = true;
 
   # Copy the NixOS configuration file and link it from the resulting system
   # (/run/current-system/configuration.nix). This is useful in case you
