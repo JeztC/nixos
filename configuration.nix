@@ -35,12 +35,17 @@
   '';
   security.polkit.enable = true;
 
+  xdg.portal = {
+    enable = true;
+    # wlr.enable = true;
+    # gtk portal needed to make gtk apps happy
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  };
   programs.steam = {
   enable = true;
   remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
   dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
 };
-  hardware.opengl.driSupport32Bit = true; # Enables support for 32bit libs that steam uses
   #nixpkgs.config.pulseaudio = true;
   nixpkgs.config.allowUnfree = true;
   imports =
@@ -107,6 +112,8 @@
 
   hardware.opengl = {
   enable = true;
+  driSupport = true;
+  driSupport32Bit = true;
   extraPackages = with pkgs; [ vaapiVdpau ];
   };
 
@@ -191,7 +198,6 @@
      hunspell
      hunspellDicts.sv_FI
      hunspellDicts.uk_UA
-     plasma5Packages.dolphin
      jq
      pkg-config
      grimblast
@@ -201,15 +207,13 @@
      gcc
      nodejs
      wayland-scanner
-     wgnord
-     dunst
      libsecret
      tutanota-desktop
      ciscoPacketTracer8
      papirus-icon-theme
+     libsForQt5.polkit-kde-agent
      dracula-theme
      nwg-look
-     jmtpfs
      godot3-mono
      kate
      thunderbird
@@ -220,8 +224,17 @@
      gnome.seahorse
      gimp
      rofi-power-menu
-     qt5ct
+     libnotify
+     unzip
      libvoikko
+     piper
+     dunst
+     jetbrains.idea-community
+     jetbrains.webstorm
+     cmatrix
+     lutris
+     wine
+     xdg-desktop-portal-gtk
    ];
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
@@ -240,20 +253,23 @@
 
   # services.openssh.enable = true;
 
+  # Enable QEMU and Virt Manager
+  virtualisation.libvirtd.enable = true;
+  programs.virt-manager.enable = true;
+
+
   # vpn configurations
   services.openvpn.servers = {
-    nordvpn_ee1194 = { config = '' config /home/jesse/vpnconfig/ee54.nordvpn.com.udp1194.ovpn ''; };
+    nordvpn_ee1194 = { config = '' config /home/jesse/vpnconfig/fi180.nordvpn.com.tcp443.ovpn ''; };
   };
   
   services.gvfs.enable = true;
+  services.ratbagd.enable = true;
 
   # rtkit is optional but recommended
   security.rtkit.enable = true;
  
-  security.pam.services.kwallet = {
-  name = "kwallet";
-  enableKwallet = true;
-  };
+  security.pam.services.login.enableKwallet = true;
 
   services.pipewire = {
   enable = true;
