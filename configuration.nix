@@ -5,6 +5,7 @@
 { config, lib, pkgs, ... }:
 
 {
+  
   programs.zsh.interactiveShellInit = ''
   export ZSH=${pkgs.oh-my-zsh}/share/oh-my-zsh/
 
@@ -19,7 +20,7 @@
   enable = true;
   # ...
 };
-  
+ 
   programs.zsh.enable = true;
   programs.zsh.promptInit = ""; # Clear this to avoid a conflict with oh-my-zsh
   programs.hyprland = {
@@ -30,9 +31,7 @@
     boot.extraModulePackages = with config.boot.kernelPackages; [
     v4l2loopback
   ];
-  boot.extraModprobeConfig = ''
-    options v4l2loopback devices=1 video_nr=1 card_label="OBS Cam" exclusive_caps=1
-  '';
+  
   security.polkit.enable = true;
 
   xdg.portal = {
@@ -45,6 +44,11 @@
   enable = true;
   remotePlay.openFirewall = true; # Open ports in the firewall for Steam Remote Play
   dedicatedServer.openFirewall = true; # Open ports in the firewall for Source Dedicated Server
+  package = pkgs.steam.override {
+  extraPkgs = pkgs: with pkgs; [
+    gamescope
+  ];
+};
 };
   #nixpkgs.config.pulseaudio = true;
   nixpkgs.config.allowUnfree = true;
@@ -73,7 +77,7 @@
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
 
   # Set your time zone.
-  # time.timeZone = "Europe/Amsterdam";
+  time.timeZone = "Europe/Vilnius";
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -100,7 +104,6 @@
   #wayland.windowManager.hyprland.plugins = [];
   # Configure keymap in X11
   services.xserver.xkb.layout = "fi";
-  services.xserver.xkbOptions = "caps:ctrl_modifier";
   # services.xserver.xkb.options = "eurosign:e,caps:escape";
 
   # Enable CUPS to print documents.
@@ -165,7 +168,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.jesse = {
      isNormalUser = true;
-     extraGroups = [ "wheel" "libvirtd" "adbusers" ]; # Enable ‘sudo’ for the user.
+     extraGroups = [ "wheel" "adbusers" "qemu-libvirtd" "libvirtd" "disk"] ; # Enable ‘sudo’ for the user.
      packages = with pkgs; [
        firefox
        tree
@@ -186,7 +189,6 @@
      neofetch
      waybar
      killall
-     gamescope
      vscodium
      wl-clipboard
      hyprpaper
@@ -234,7 +236,26 @@
      cmatrix
      lutris
      wine
+     libglvnd
      xdg-desktop-portal-gtk
+     zoom-us
+     exfatprogs
+     dotnet-sdk
+     cypress
+     virt-manager
+     looking-glass-client
+     (vscode-with-extensions.override {
+     vscode = vscodium;
+     vscodeExtensions = with vscode-extensions; [
+     ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
+      {
+        name = "test-my-code";
+        publisher = "moocfi";
+        version = "2.2.4";
+        sha256 = "c+UfNYNs56BhbWOsZbI4E8JKH3u6VGsFO3BxG/OwVNY=";
+      }
+    ];
+   })
    ];
   environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
@@ -253,16 +274,17 @@
 
   # services.openssh.enable = true;
 
-  # Enable QEMU and Virt Manager
   virtualisation.libvirtd.enable = true;
-  programs.virt-manager.enable = true;
-
+  #programs.virt-manager.enable = true;
 
   # vpn configurations
-  services.openvpn.servers = {
-    nordvpn_ee1194 = { config = '' config /home/jesse/vpnconfig/fi180.nordvpn.com.tcp443.ovpn ''; };
-  };
+  #services.openvpn.servers = {
+  #  nordvpn_ee1194 = { config = '' config /home/jesse/vpnconfig/ee54.nordvpn.com.udp1194.ovpn ''; };
+  #};
+   
   
+  security.pam.services.sddm.enableKwallet = true;
+
   services.gvfs.enable = true;
   services.ratbagd.enable = true;
 

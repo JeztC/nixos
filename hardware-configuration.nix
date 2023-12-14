@@ -10,10 +10,28 @@
 
   boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
   boot.initrd.kernelModules = [ ];
-  boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
   boot.supportedFilesystems = [ "ntfs" ];
 
+  # Change this to match your system's CPU.
+  # Change this to specify the IOMMU ids you wrote down earlier.
+
+  boot.kernelModules = [ "kvm-amd" ];
+  #boot.kernelparams = [ "amd_iommu=on" "amd_iommu=pt" "kvm.ignore_msrs=1" ];
+  #boot.kernelparams = [ "amd_iommu=on" ];
+
+
+  #boot.extraModprobeConfig = ''
+  #options vfio-pci ids=10de:1f82,10de:10fa
+  #softdep nvidiafb pre: vfio-pci
+#'';
+  
+   # Add a file for looking-glass to use later. This will allow for viewing the guest VM's screen in a
+  # performant way.
+  systemd.tmpfiles.rules = [
+      "f /dev/shm/looking-glass 0660 jesse qemu-libvirtd -"
+  ];
+  
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/b57a4ccb-e64f-4df4-b225-5b079fd77f8e";
       fsType = "ext4";
