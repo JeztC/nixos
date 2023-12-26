@@ -10,7 +10,7 @@
   export ZSH=${pkgs.oh-my-zsh}/share/oh-my-zsh/
 
   # Customize your oh-my-zsh options here
-  ZSH_THEME="dracula"
+  # ZSH_THEME="dracula"
   plugins=(git)
 
   source $ZSH/oh-my-zsh.sh
@@ -20,9 +20,16 @@
   enable = true;
   # ...
 };
+  programs.zsh = {
+  enable = true;
+  autosuggestions.enable = true;
+  ohMyZsh.enable = true;
+  ohMyZsh.plugins = [ "git" ];
+  syntaxHighlighting.enable = true;
+  };
  
-  programs.zsh.enable = true;
-  programs.zsh.promptInit = ""; # Clear this to avoid a conflict with oh-my-zsh
+  #programs.zsh.enable = true;
+  #programs.zsh.promptInit = ""; # Clear this to avoid a conflict with oh-my-zsh
   programs.hyprland = {
   enable = true;
   xwayland.enable = true;
@@ -47,6 +54,7 @@
   package = pkgs.steam.override {
   extraPkgs = pkgs: with pkgs; [
     gamescope
+    mangohud
   ];
 };
 };
@@ -93,7 +101,8 @@
 
   # Enable the X11 windowing system.
   
-  services.xserver.displayManager.sddm.enable = true;
+  services.xserver.displayManager.gdm.enable = true;
+  services.xserver.displayManager.defaultSession = "hyprland";
   services.xserver.enable = true;
   
   # Secrets Provider
@@ -107,7 +116,7 @@
   # services.xserver.xkb.options = "eurosign:e,caps:escape";
 
   # Enable CUPS to print documents.
-  # services.printing.enable = true;
+  services.printing.enable = true;
 
   # Enable sound.
   sound.enable = true;
@@ -157,7 +166,6 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
   services.xserver.desktopManager.plasma5.enable = true;
-  services.printing.enable = true;
   
   services.avahi = {
   enable = true;
@@ -243,7 +251,10 @@
      dotnet-sdk
      cypress
      virt-manager
+     ntfs3g
      looking-glass-client
+     ventoy-full
+     ncurses
      (vscode-with-extensions.override {
      vscode = vscodium;
      vscodeExtensions = with vscode-extensions; [
@@ -278,9 +289,9 @@
   #programs.virt-manager.enable = true;
 
   # vpn configurations
-  #services.openvpn.servers = {
-  #  nordvpn_ee1194 = { config = '' config /home/jesse/vpnconfig/ee54.nordvpn.com.udp1194.ovpn ''; };
-  #};
+  services.openvpn.servers = {
+    nordvpn_ee1194 = { config = '' config /home/jesse/vpnconfig/ee54.nordvpn.com.udp1194.ovpn ''; };
+  };
    
   
   security.pam.services.sddm.enableKwallet = true;
