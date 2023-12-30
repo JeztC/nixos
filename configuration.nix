@@ -55,6 +55,16 @@
   extraPkgs = pkgs: with pkgs; [
     gamescope
     mangohud
+    xorg.libXcursor
+    xorg.libXi
+    xorg.libXinerama
+    xorg.libXScrnSaver
+    libpng
+    libpulseaudio
+    libvorbis
+    stdenv.cc.cc.lib
+    libkrb5
+    keyutils
   ];
 };
 };
@@ -113,7 +123,7 @@
   #wayland.windowManager.hyprland.plugins = [];
   # Configure keymap in X11
   services.xserver.xkb.layout = "fi";
-  # services.xserver.xkb.options = "eurosign:e,caps:escape";
+  services.xserver.xkb.options = "ctrl:nocaps";
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -172,6 +182,8 @@
   nssmdns = true;
   openFirewall = true;
   };
+ 
+  users.defaultUserShell = pkgs.zsh;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.jesse = {
@@ -255,6 +267,8 @@
      looking-glass-client
      ventoy-full
      ncurses
+     pavucontrol
+     sdbus-cpp
      (vscode-with-extensions.override {
      vscode = vscodium;
      vscodeExtensions = with vscode-extensions; [
