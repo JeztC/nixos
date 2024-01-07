@@ -261,7 +261,6 @@
      jetbrains.idea-community
      jetbrains.webstorm
      cmatrix
-     wl-clip-persist
      wineWowPackages.stable
      wine
     (wine.override { wineBuild = "wine64"; })
