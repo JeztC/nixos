@@ -86,7 +86,13 @@
   ];
 
   # Use the systemd-boot EFI boot loader.
-  boot.loader.systemd-boot.enable = true;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+  #boot.loader.systemd-boot.enable = true;
+  boot.loader.grub.enable = true;
+  boot.loader.grub.device = "nodev";
+  boot.loader.grub.configurationLimit = 2;
+  boot.loader.grub.useOSProber = true;
+  boot.loader.grub.efiSupport = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
   # networking.hostName = "nixos"; # Define your hostname.
@@ -111,7 +117,7 @@
 
   # Enable the X11 windowing system.
   
-  services.xserver.displayManager.gdm.enable = true;
+  services.xserver.displayManager.sddm.enable = true;
   services.xserver.displayManager.defaultSession = "hyprland";
   services.xserver.enable = true;
   
@@ -123,7 +129,7 @@
   #wayland.windowManager.hyprland.plugins = [];
   # Configure keymap in X11
   services.xserver.xkb.layout = "fi";
-  services.xserver.xkb.options = "ctrl:nocaps";
+  #services.xserver.xkb.options = "ctrl:nocaps";
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -211,9 +217,11 @@
      killall
      vscodium
      wl-clipboard
+     clipman
      hyprpaper
      hyprpicker
      udiskie
+     wl-clip-persist
      rofi
      libreoffice-qt
      gammastep
@@ -231,7 +239,6 @@
      wayland-scanner
      libsecret
      tutanota-desktop
-     ciscoPacketTracer8
      papirus-icon-theme
      libsForQt5.polkit-kde-agent
      dracula-theme
@@ -254,8 +261,13 @@
      jetbrains.idea-community
      jetbrains.webstorm
      cmatrix
-     lutris
+     wl-clip-persist
+     wineWowPackages.stable
      wine
+    (wine.override { wineBuild = "wine64"; })
+     wineWowPackages.staging
+     winetricks
+     wineWowPackages.waylandFull
      libglvnd
      xdg-desktop-portal-gtk
      zoom-us
@@ -269,9 +281,14 @@
      ncurses
      pavucontrol
      sdbus-cpp
+     vscode
+     adoptopenjdk-bin
+     xorg.xkbcomp
+     home-manager
      (vscode-with-extensions.override {
      vscode = vscodium;
      vscodeExtensions = with vscode-extensions; [
+     ms-python.python
      ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
       {
         name = "test-my-code";
@@ -308,7 +325,12 @@
   };
    
   
-  security.pam.services.sddm.enableKwallet = true;
+  security.pam.services.kwallet = {
+   name = "kwallet";
+   enableKwallet = true;
+  };
+
+  #security.pam.services.services.enableKwallet = true;
 
   services.gvfs.enable = true;
   services.ratbagd.enable = true;
@@ -316,7 +338,7 @@
   # rtkit is optional but recommended
   security.rtkit.enable = true;
  
-  security.pam.services.login.enableKwallet = true;
+  #security.pam.services.login.enableKwallet = true;
 
   services.pipewire = {
   enable = true;
