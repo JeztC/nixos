@@ -9,7 +9,7 @@
     ];
 
   boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
-  boot.initrd.kernelModules = [ ];
+  boot.initrd.kernelModules = [ "amdgpu" ];
   boot.extraModulePackages = [ ];
   boot.supportedFilesystems = [ "ntfs" ];
 
@@ -18,14 +18,17 @@
 
   boot.kernelModules = [ "kvm-amd" ];
   #boot.kernelparams = [ "amd_iommu=on" "amd_iommu=pt" "kvm.ignore_msrs=1" ];
-  #boot.kernelparams = [ "amd_iommu=on" ];
-
-
-  #boot.extraModprobeConfig = ''
-  #options vfio-pci ids=10de:1f82,10de:10fa
-  #softdep nvidiafb pre: vfio-pci
-#'';
+  boot.kernelParams = [ "amd_iommu=on" ];
   
+  #boot.postBootCommands = ''
+  #  DEVS="0000:0a:00.0 0000:0a:00.1"
+#
+#    for DEV in $DEVS; do
+#      echo "vfio-pci" > /sys/bus/pci/devices/$DEV/driver_override
+#    done
+#    modprobe -i vfio-pci
+# '';
+
    # Add a file for looking-glass to use later. This will allow for viewing the guest VM's screen in a
   # performant way.
   systemd.tmpfiles.rules = [

@@ -5,7 +5,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  
+ 
   programs.zsh.interactiveShellInit = ''
   export ZSH=${pkgs.oh-my-zsh}/share/oh-my-zsh/
 
@@ -120,6 +120,13 @@
   services.xserver.displayManager.sddm.enable = true;
   services.xserver.displayManager.defaultSession = "hyprland";
   services.xserver.enable = true;
+  services.xserver.videoDrivers = [ "amdgpu" ];
+  
+  services.xserver.xkb.extraLayouts.caps-lock = {
+    description = "US layout with alt-gr greek";
+    languages   = [ "fi" ];
+    symbolsFile = /etc/nixos/capslock;
+  };
   
   # Secrets Provider
   services.passSecretService.enable = true;
@@ -281,9 +288,13 @@
      pavucontrol
      sdbus-cpp
      vscode
+     google-chrome
      adoptopenjdk-bin
      xorg.xkbcomp
      home-manager
+     floorp
+     python3
+     anybadge
      (vscode-with-extensions.override {
      vscode = vscodium;
      vscodeExtensions = with vscode-extensions; [
@@ -316,15 +327,16 @@
   # services.openssh.enable = true;
 
   virtualisation.libvirtd.enable = true;
+  virtualisation.libvirtd.qemu.ovmf.enable = true;
   #programs.virt-manager.enable = true;
 
   # vpn configurations
-  services.openvpn.servers = {
-    nordvpn_ee1194 = { config = '' config /home/jesse/vpnconfig/ee54.nordvpn.com.udp1194.ovpn ''; };
-  };
+  #services.openvpn.servers = {
+  #  nordvpn_ee1194 = { config = '' config /home/jesse/vpnconfig/fi180.nordvpn.com.tcp443.ovpn ''; };
+  #};
    
   
-  security.pam.services.kwallet = {
+  security.pam.services.sddm = {
    name = "kwallet";
    enableKwallet = true;
   };
