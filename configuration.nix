@@ -122,21 +122,10 @@
   services.xserver.enable = true;
   services.xserver.videoDrivers = [ "amdgpu" ];
   
-  services.xserver.xkb.extraLayouts.caps-lock = {
-    description = "US layout with alt-gr greek";
-    languages   = [ "fi" ];
-    symbolsFile = /etc/nixos/capslock;
-  };
-  
   # Secrets Provider
   services.passSecretService.enable = true;
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ]; 
-  
-  #wayland.windowManager.hyprland.plugins = [];
-  # Configure keymap in X11
-  services.xserver.xkb.layout = "fi";
-  #services.xserver.xkb.options = "ctrl:nocaps";
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -222,7 +211,6 @@
      neofetch
      waybar
      killall
-     vscodium
      wl-clipboard
      clipman
      hyprpaper
@@ -287,16 +275,17 @@
      ncurses
      pavucontrol
      sdbus-cpp
-     vscode
      google-chrome
-     adoptopenjdk-bin
-     xorg.xkbcomp
      home-manager
+     mullvad-vpn
+     libsForQt5.kolourpaint
      floorp
      python3
      anybadge
+     waydroid
+     vscodium
+     stdenv.cc.cc
      (vscode-with-extensions.override {
-     vscode = vscodium;
      vscodeExtensions = with vscode-extensions; [
      ms-python.python
      ] ++ pkgs.vscode-utils.extensionsFromVscodeMarketplace [
@@ -309,7 +298,12 @@
     ];
    })
    ];
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
+  #environment.sessionVariables.NIXOS_OZONE_WL = "1";
+ 
+  environment.sessionVariables = {
+   NIXOS_OZONE_WL = "1";
+   DOTNET_ROOT = "${pkgs.dotnet-sdk}";
+  };
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -317,24 +311,20 @@
   # programs.gnupg.agent = {
   #   enable = true;
   #   enableSSHSupport = true;
-  # };
+  # }  
 
+  services.mullvad-vpn.enable = true;
+  programs.java.enable = true;
   programs.adb.enable = true;
+  programs.nix-ld.enable = true;
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-
   # services.openssh.enable = true;
 
   virtualisation.libvirtd.enable = true;
   virtualisation.libvirtd.qemu.ovmf.enable = true;
   #programs.virt-manager.enable = true;
-
-  # vpn configurations
-  #services.openvpn.servers = {
-  #  nordvpn_ee1194 = { config = '' config /home/jesse/vpnconfig/fi180.nordvpn.com.tcp443.ovpn ''; };
-  #};
-   
   
   security.pam.services.sddm = {
    name = "kwallet";
