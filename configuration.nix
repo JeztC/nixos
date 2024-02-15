@@ -3,7 +3,7 @@
 # https://search.nixos.org/options and in the NixOS manual (`nixos-help`).
 
 { config, lib, pkgs, ... }:
-
+ 
 {
  
   programs.zsh.interactiveShellInit = ''
@@ -20,13 +20,6 @@
   enable = true;
   # ...
 };
-  programs.zsh = {
-  enable = true;
-  autosuggestions.enable = true;
-  ohMyZsh.enable = true;
-  ohMyZsh.plugins = [ "git" ];
-  syntaxHighlighting.enable = true;
-  };
  
   #programs.zsh.enable = true;
   #programs.zsh.promptInit = ""; # Clear this to avoid a conflict with oh-my-zsh
@@ -41,6 +34,10 @@
   
   security.polkit.enable = true;
 
+services.xserver = {
+  layout = "fi";
+};
+console.keyMap = "fi";
   xdg.portal = {
     enable = true;
     # wlr.enable = true;
@@ -54,6 +51,7 @@
   package = pkgs.steam.override {
   extraPkgs = pkgs: with pkgs; [
     gamescope
+    gamemode
     mangohud
     xorg.libXcursor
     xorg.libXi
@@ -118,6 +116,7 @@
   # Enable the X11 windowing system.
   
   services.xserver.displayManager.sddm.enable = true;
+  services.xserver.xkbOptions = "eurosign:e,caps:escape";
   services.xserver.displayManager.defaultSession = "hyprland";
   services.xserver.enable = true;
   services.xserver.videoDrivers = [ "amdgpu" ];
@@ -185,20 +184,22 @@
   openFirewall = true;
   };
  
-  users.defaultUserShell = pkgs.zsh;
+  users.defaultUserShell = pkgs.nushell;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.jesse = {
      isNormalUser = true;
-     extraGroups = [ "wheel" "adbusers" "qemu-libvirtd" "libvirtd" "disk"] ; # Enable ‘sudo’ for the user.
+     extraGroups = [ "keyd" "wheel" "adbusers" "qemu-libvirtd" "libvirtd" "disk"] ; # Enable ‘sudo’ for the user.
      packages = with pkgs; [
        firefox
        tree
        kitty
        htop
        discord
-       brave
        runelite
+       mullvad-browser
+       ungoogled-chromium
+       vesktop
      ];
    };
    
@@ -218,14 +219,17 @@
      udiskie
      wl-clip-persist
      rofi
-     libreoffice-qt
+     libreoffice-fresh
      gammastep
      hunspell
      hunspellDicts.sv_FI
      hunspellDicts.uk_UA
      jq
      pkg-config
-     grimblast
+     grim
+     sqlitebrowser
+     sqlite
+     slurp
      obs-studio
      mpv
      jetbrains.clion
@@ -236,21 +240,24 @@
      tutanota-desktop
      papirus-icon-theme
      libsForQt5.polkit-kde-agent
+     libsForQt5.kalk
+     libsForQt5.discover
+     libunity
      dracula-theme
+     dotnet-sdk_8
      nwg-look
-     godot3-mono
      kate
      thunderbird
-     zsh
-     oh-my-zsh
      zsh-syntax-highlighting
      teams-for-linux
      gnome.seahorse
      gimp
      rofi-power-menu
      libnotify
+     hyprland-autoname-workspaces
      unzip
      libvoikko
+     nushell
      piper
      dunst
      jetbrains.idea-community
@@ -266,7 +273,6 @@
      xdg-desktop-portal-gtk
      zoom-us
      exfatprogs
-     dotnet-sdk
      cypress
      virt-manager
      ntfs3g
@@ -274,15 +280,14 @@
      ventoy-full
      ncurses
      pavucontrol
+     fuseiso
      sdbus-cpp
-     google-chrome
      home-manager
      mullvad-vpn
      libsForQt5.kolourpaint
      floorp
      python3
      anybadge
-     waydroid
      vscodium
      stdenv.cc.cc
      (vscode-with-extensions.override {
@@ -301,10 +306,10 @@
   #environment.sessionVariables.NIXOS_OZONE_WL = "1";
  
   environment.sessionVariables = {
-   NIXOS_OZONE_WL = "1";
    DOTNET_ROOT = "${pkgs.dotnet-sdk}";
+   NIXOS_OZONE_WL = "1";
   };
-
+  
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
@@ -314,6 +319,7 @@
   # }  
 
   services.mullvad-vpn.enable = true;
+
   programs.java.enable = true;
   programs.adb.enable = true;
   programs.nix-ld.enable = true;
