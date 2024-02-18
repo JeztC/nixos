@@ -71,6 +71,7 @@ console.keyMap = "fi";
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./unfree.nix
     ];
   
   nixpkgs.overlays = [
@@ -85,12 +86,8 @@ console.keyMap = "fi";
 
   # Use the systemd-boot EFI boot loader.
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  #boot.loader.systemd-boot.enable = true;
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "nodev";
-  boot.loader.grub.configurationLimit = 2;
-  boot.loader.grub.useOSProber = true;
-  boot.loader.grub.efiSupport = true;
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.grub.device = "/dev/sda";
   boot.loader.efi.canTouchEfiVariables = true;
 
   # networking.hostName = "nixos"; # Define your hostname.
@@ -202,7 +199,7 @@ console.keyMap = "fi";
        vesktop
      ];
    };
-   
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
@@ -388,4 +385,3 @@ console.keyMap = "fi";
   system.stateVersion = "23.11"; # Did you read the comment?
 
 }
-
