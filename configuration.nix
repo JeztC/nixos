@@ -242,7 +242,10 @@ console.keyMap = "fi";
      libsForQt5.polkit-kde-agent
      libsForQt5.kalk
      libsForQt5.discover
+     wmctrl
+     wlogout
      libunity
+     eww-wayland
      dracula-theme
      dotnet-sdk_8
      nwg-look
