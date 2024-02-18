@@ -71,7 +71,6 @@ console.keyMap = "fi";
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
-      ./unfree.nix
     ];
   
   nixpkgs.overlays = [
