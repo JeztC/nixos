@@ -11,7 +11,8 @@
 	};
 
 	programs.hyprland = {
-		enable = true;
+	
+	enable = true;
 		xwayland.enable = true;
 	};
 
@@ -32,7 +33,7 @@
 			dedicatedServer.openFirewall = true;
 			package = pkgs.steam.override {
 				extraPkgs = pkgs: with pkgs; [
-					gamescope
+						gamescope
 						gamemode
 						mangohud
 						xorg.libXcursor
@@ -85,7 +86,10 @@
 		enable = true;
 		driSupport = true;
 		driSupport32Bit = true;
-		extraPackages = with pkgs; [ vaapiVdpau ];
+                extraPackages = with pkgs; [
+                    vaapiVdpau
+                    libvdpau-va-gl
+            ];
 	};
 
 	fonts.packages = with pkgs; [
@@ -144,6 +148,7 @@
 				brave
 			];
 	};
+    
 
 	environment.systemPackages = with pkgs; [
 		    vim
@@ -202,6 +207,7 @@
 			libsForQt5.kservice
 			kdePackages.kio-fuse
 			kdePackages.kpat
+                        nixos-bgrt-plymouth
 			wmctrl
 			libunity
 			dracula-theme
@@ -257,7 +263,7 @@
 			stdenv.cc.cc
 			];
 			
-   environment.sessionVariables.NIXOS_OZONE_WL = "1";
+        environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
 	services.mullvad-vpn.enable = true;
 	services.onedrive.enable = true;
