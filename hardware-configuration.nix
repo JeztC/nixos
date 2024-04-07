@@ -10,7 +10,23 @@
 
   boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
   boot.initrd.kernelModules = [ "amdgpu" ];
-  boot.extraModulePackages = [ ];
+  
+  boot.extraModulePackages = with config.boot.kernelPackages; [
+    v4l2loopback
+  ];
+
+  # Use the systemd-boot EFI boot loader.
+  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.grub.device = "/dev/sda";
+  boot.loader.efi.canTouchEfiVariables = true;  
+  boot.plymouth.enable = true;
+  boot.tmp.cleanOnBoot = true;
+
+  boot.extraModprobeConfig = ''
+    options v4l2loopback devices=1 video_nr=1 card_label="OBS Cam" exclusive_caps=1
+  '';
+
   boot.supportedFilesystems = [ "ntfs" ];
 
   # Change this to match your system's CPU.
@@ -19,29 +35,14 @@
   boot.kernelModules = [ "kvm-amd" ];
   #boot.kernelparams = [ "amd_iommu=on" "amd_iommu=pt" "kvm.ignore_msrs=1" ];
   boot.kernelParams = [ "amd_iommu=on" ];
-  
-  #boot.postBootCommands = ''
-  #  DEVS="0000:0a:00.0 0000:0a:00.1"
-#
-#    for DEV in $DEVS; do
-#      echo "vfio-pci" > /sys/bus/pci/devices/$DEV/driver_override
-#    done
-#    modprobe -i vfio-pci
-# '';
 
-   # Add a file for looking-glass to use later. This will allow for viewing the guest VM's screen in a
-  # performant way.
-  systemd.tmpfiles.rules = [
-      "f /dev/shm/looking-glass 0660 jesse qemu-libvirtd -"
-  ];
-  
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/b57a4ccb-e64f-4df4-b225-5b079fd77f8e";
+    { device = "/dev/disk/by-uuid/55c4ad55-23c8-40fb-967a-833297638905";
       fsType = "ext4";
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/6713-049C";
+    { device = "/dev/disk/by-uuid/1E00-2EA5";
       fsType = "vfat";
     };
 
