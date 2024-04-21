@@ -11,8 +11,7 @@
 	};
 
 	programs.hyprland = {
-	
-	enable = true;
+		enable = true;
 		xwayland.enable = true;
 	};
 
@@ -33,13 +32,9 @@
 			dedicatedServer.openFirewall = true;
 			package = pkgs.steam.override {
 				extraPkgs = pkgs: with pkgs; [
-						gamescope
 						gamemode
 						mangohud
-						xorg.libXcursor
-						xorg.libXi
-						xorg.libXinerama
-						xorg.libXScrnSaver
+                                                gamescope
 						libpng
 						libpulseaudio
 						libvorbis
@@ -69,8 +64,8 @@
 	networking.networkmanager.enable = true;
 	time.timeZone = "Europe/Vilnius";
 
-	services.xserver.displayManager.sddm.enable = true;
-	services.xserver.displayManager.defaultSession = "hyprland";
+	services.displayManager.sddm.enable = true;
+	services.displayManager.defaultSession = "hyprland";
 	services.xserver.enable = true;
 	services.xserver.videoDrivers = [ "amdgpu" ];
 
@@ -127,6 +122,7 @@
 	};
 
 	services.desktopManager.plasma6.enable = true;
+	#services.xserver.desktopManager.cinnamon.enable = true;
 
 	services.avahi = {
 		enable = true;
@@ -182,7 +178,7 @@
 			slurp
 			obs-studio
 			mpv
-			thunderbird
+			betterbird
 			bibata-cursors
 			gcc
 			unrar
@@ -200,6 +196,7 @@
 			kdePackages.dolphin
 			kdePackages.sonnet
 			libsForQt5.kio
+                        teams-for-linux
 			play-with-mpv
 			libsForQt5.kio-extras
 			libsForQt5.kimageformats
@@ -209,6 +206,7 @@
 			kdePackages.kpat
                         nixos-bgrt-plymouth
 			wmctrl
+                        yazi
 			libunity
 			dracula-theme
 			dotnet-sdk
@@ -222,7 +220,6 @@
 			hyprcursor
 			hypridle
 			haskellPackages.aeson
-			teams-for-linux
 			whatsapp-for-linux
 			gimp
 			rofi-power-menu
@@ -232,16 +229,19 @@
 			nushell
 			piper
 			cargo
+                        python312Packages.matplotlib
+                        python312Packages.numpy
+                        google-chrome
+                        appimage-run
+                        wineWowPackages.stable
+                        wineWowPackages.waylandFull
 			dunst
+                        vscode
 			jetbrains.idea-community
 			jetbrains.pycharm-community
+                        jetbrains.webstorm
+                        libsForQt5.polkit-kde-agent
 			cmatrix
-			wineWowPackages.stable
-			wine
-			(wine.override { wineBuild = "wine64"; })
-			wineWowPackages.staging
-			winetricks
-			wineWowPackages.waylandFull
 			zoom-us
 			exfatprogs
 			virt-manager
@@ -281,6 +281,14 @@
 
 	services.gvfs.enable = true;
 	services.ratbagd.enable = true;
+        
+        services.openssh = {
+  	 enable = true;
+  	 # require public key authentication for better security
+  	 settings.PasswordAuthentication = false;
+  	 settings.KbdInteractiveAuthentication = false;
+ 	 settings.PermitRootLogin = "yes";
+	};
 
 	security.rtkit.enable = true;
 	services.pipewire = {
