@@ -22,6 +22,7 @@
   boot.loader.efi.canTouchEfiVariables = true;  
   boot.plymouth.enable = true;
   boot.tmp.cleanOnBoot = true;
+  boot.kernel.sysctl."kernel.sysrq" = 502;
 
   boot.extraModprobeConfig = ''
     options v4l2loopback devices=1 video_nr=1 card_label="OBS Cam" exclusive_caps=1
