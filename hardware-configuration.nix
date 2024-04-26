@@ -9,41 +9,32 @@
     ];
 
   boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
-  boot.initrd.kernelModules = [ "amdgpu" ];
-  
+  boot.kernelModules = [ "kvm-amd" "vfio_virqfd" "vfio_pci" "vfio_iommu_type1" "vfio" ];
   boot.extraModulePackages = with config.boot.kernelPackages; [
     v4l2loopback
   ];
-
-  # Use the systemd-boot EFI boot loader.
+  boot.loader.grub.device = "nodev";
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.loader.systemd-boot.enable = true;
-  boot.loader.grub.device = "/dev/sda";
-  boot.loader.efi.canTouchEfiVariables = true;  
-  boot.plymouth.enable = true;
-  boot.tmp.cleanOnBoot = true;
-  boot.kernel.sysctl."kernel.sysrq" = 502;
-
-  boot.extraModprobeConfig = ''
-    options v4l2loopback devices=1 video_nr=1 card_label="OBS Cam" exclusive_caps=1
-  '';
+  boot.loader.efi.canTouchEfiVariables = true;
 
   boot.supportedFilesystems = [ "ntfs" ];
+  boot.initrd.kernelModules = [ "amdgpu" ];
 
-  # Change this to match your system's CPU.
-  # Change this to specify the IOMMU ids you wrote down earlier.
+  boot.kernelParams = [ "amd_iommu=on" "amd_iommu=pt" "kvm.ignore_msrs=1" ];
 
-  boot.kernelModules = [ "kvm-amd" ];
-  #boot.kernelparams = [ "amd_iommu=on" "amd_iommu=pt" "kvm.ignore_msrs=1" ];
-  boot.kernelParams = [ "amd_iommu=on" ];
+  boot.plymouth.enable = true;
+  boot.tmp.cleanOnBoot = true;
+
+  #boot.extraModprobeConfig = "options vfio-pci ids=10de:1f82,10de:10fa";
 
   fileSystems."/" =
-    { device = "/dev/disk/by-uuid/55c4ad55-23c8-40fb-967a-833297638905";
+    { device = "/dev/disk/by-uuid/4bb1218a-e5a2-43c0-916f-e4af5fc031c5";
       fsType = "ext4";
     };
 
   fileSystems."/boot" =
-    { device = "/dev/disk/by-uuid/1E00-2EA5";
+    { device = "/dev/disk/by-uuid/9245-5FE5";
       fsType = "vfat";
     };
 
