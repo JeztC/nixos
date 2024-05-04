@@ -14,9 +14,10 @@
     v4l2loopback
   ];
   boot.loader.grub.device = "nodev";
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages_zen;
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+  boot.kernel.sysctl."kernel.sysrq" = 1;
 
   boot.supportedFilesystems = [ "ntfs" ];
   boot.initrd.kernelModules = [ "amdgpu" ];
