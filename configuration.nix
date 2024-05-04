@@ -15,11 +15,6 @@
      xwayland.enable = true;
     };
 
-    programs.git = {
-	enable = true;
-	config.credential.helper = "libsecret";
-    };
-
   # Use the systemd-boot EFI boot loader.
   nixpkgs.config.allowUnfree = true;
 
@@ -58,7 +53,7 @@
   console.keyMap = "fi";
 
   services.desktopManager.plasma6.enable = true;  
-  services.displayManager.sddm.enable = true;
+  services.xserver.displayManager.lightdm.enable = true;
   services.xserver.enable = true;
   security.sudo.wheelNeedsPassword = false;
 
@@ -81,7 +76,7 @@
   services.printing.enable = true;
 
 
-  security.pam.services.sddm.enableKwallet = true;
+  #security.pam.services.sddm.enableKwallet = true;
   services.passSecretService.enable = true;
 
   services.openssh = {
@@ -109,7 +104,7 @@
      packages = with pkgs; [
        firefox
        tree
-       discord
+       vesktop
        runelite
      ];
    };
@@ -133,9 +128,8 @@
      vscode
      wl-clipboard
      wl-clip-persist
-     kitty
-     wezterm
      jetbrains.pycharm-community
+     jetbrains.clion
      play-with-mpv
      tofi
      cargo
@@ -156,12 +150,12 @@
      insomnia
      hyprpaper
      hypridle
+     gnuchess
      hyprlock
      hyprpicker
      tutanota-desktop
      gimp
      unzip
-     eww
      nushell
      dunst
      jq
@@ -188,32 +182,28 @@
  
   	programs.steam = {
 		enable = true;
+                gamescopeSession.enable = true;
 		remotePlay.openFirewall = true;
 			dedicatedServer.openFirewall = true;
 			package = pkgs.steam.override {
 				extraPkgs = pkgs: with pkgs; [
-						gamescope
-						gamemode
-						mangohud
-						xorg.libXcursor
-						xorg.libXi
-						xorg.libXinerama
-						xorg.libXScrnSaver
-						libpng
-						libpulseaudio
-						libvorbis
-						stdenv.cc.cc.lib
-						libkrb5
-						keyutils
+					mangohud
+					libpng
+					libpulseaudio
+					libvorbis
+					stdenv.cc.cc.lib
+					libkrb5
+					keyutils
 				];
 			};
 	};
 
-
+        programs.gamemode.enable = true;
 
   	fonts.packages = with pkgs; [
 	   vistafonts
-           corefonts
+	   jetbrains-mono
+       corefonts
 	];
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -232,7 +222,6 @@
   services.mullvad-vpn.enable = true;
   programs.java.enable = true;
   programs.nix-ld.enable = true;
-  
 
   virtualisation.libvirtd.enable = true;
   virtualisation.libvirtd.qemu.ovmf.enable = true;
@@ -271,3 +260,4 @@
   system.stateVersion = "23.11"; # Did you read the comment?
 
 }
+
