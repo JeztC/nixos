@@ -10,22 +10,36 @@
       ./hardware-configuration.nix
     ];
 
+  nixpkgs.config.allowUnfree = true;
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
+  # Use the systemd-boot EFI boot loader.
+    boot.loader.systemd-boot.enable = true;
+    boot.loader.efi.canTouchEfiVariables = true;
+
     programs.hyprland = {
      enable = true;
      xwayland.enable = true;
-    };
-
-  # Use the systemd-boot EFI boot loader.
-  nixpkgs.config.allowUnfree = true;
-
+    }; 
+    
   # networking.hostName = "nixos"; # Define your hostname.
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
   networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
 
   # Set your time zone.
   time.timeZone = "Europe/Vilnius";
+
+  	xdg.portal = {
+		enable = true;
+	};
+
+
+  users.defaultUserShell = pkgs.nushell;
+
+  security.sudo.wheelNeedsPassword = false;
+
+  console.keyMap = "fi";
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -41,148 +55,42 @@
 
   # Enable the X11 windowing system.
   # services.xserver.enable = true;
-
-  services.xserver.xkb = {
-     layout = "fi";
-  };
-
-	xdg.portal = {
-		enable = true;
-	};
-
-  console.keyMap = "fi";
-
-  services.desktopManager.plasma6.enable = true;  
-  services.xserver.displayManager.lightdm.enable = true;
-  services.xserver.enable = true;
-  security.sudo.wheelNeedsPassword = false;
-
-  users.defaultUserShell = pkgs.nushell;
-
-  	hardware.opengl = {
-		enable = true;
-		driSupport = true;
-		driSupport32Bit = true;
-                extraPackages = with pkgs; [
-                    vaapiVdpau
-                    libvdpau-va-gl
-            ];
-	};
-  # Configure keymap in X11
-  # services.xserver.xkb.layout = "us";
+  
   # services.xserver.xkb.options = "eurosign:e,caps:escape";
 
   # Enable CUPS to print documents.
-  services.printing.enable = true;
-
-
-  #security.pam.services.sddm.enableKwallet = true;
-  services.passSecretService.enable = true;
-
-  services.openssh = {
-    enable = true;
-    # require public key authentication for better security
-    settings.PasswordAuthentication = false;
-    settings.KbdInteractiveAuthentication = false;
-    settings.PermitRootLogin = "yes";
-  };
-
-  security.pam.services.login.enableKwallet = true;
-
+  # services.printing.enable = true;
 
   # Enable sound.
-  # sound.enable = true;
   # hardware.pulseaudio.enable = true;
+  # OR
+  # services.pipewire = {
+  #   enable = true;
+  #   pulse.enable = true;
+  # };
 
   # Enable touchpad support (enabled default in most desktopManager).
-  # services.xserver.libinput.enable = true;
+  # services.libinput.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.jesse = {
+   users.users.jesse = {
      isNormalUser = true;
-     extraGroups = [ "wheel" "qemu-libvirtd" "libvirtd" "disk" ]; # Enable ‘sudo’ for the user.
+     extraGroups = [ "wheel" "libvirtd" ]; # Enable ‘sudo’ for the user.
      packages = with pkgs; [
-       firefox
        tree
+       flameshot
        vesktop
-       runelite
+       htop
+       neofetch
+       kitty
+       tofi
+
      ];
    };
 
- 
-	services.pipewire = {
+     	programs.steam = {
 		enable = true;
-		alsa.enable = true;
-		alsa.support32Bit = true;
-        pulse.enable = true;
-  };
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  environment.systemPackages = with pkgs; [
-     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
-     wget
-     htop
-     mullvad-vpn
-     wineWowPackages.waylandFull
-     libreoffice-qt
-     vscode
-     wl-clipboard
-     wl-clip-persist
-     jetbrains.pycharm-community
-     jetbrains.clion
-     play-with-mpv
-     tofi
-     cargo
-     teams-for-linux
-     gammastep
-     xwaylandvideobridge
-     grim
-     sqlitebrowser
-     sqlite
-     obs-studio
-     mpv
-     betterbird
-     nwg-look
-     libnotify
-     gcc
-     unrar
-     nodejs
-     insomnia
-     hyprpaper
-     hypridle
-     gnuchess
-     hyprlock
-     hyprpicker
-     tutanota-desktop
-     gimp
-     unzip
-     nushell
-     dunst
-     jq
-     slurp
-     ghc
-     bibata-cursors
-     fuseiso
-     libsForQt5.polkit-kde-agent
-     kdePackages.kolourpaint
-     libsForQt5.kio-extras
-	 libsForQt5.kimageformats
-	 libsForQt5.kdegraphics-thumbnailers
-	 libsForQt5.kservice
-	 kdePackages.kalk
-	 kdePackages.kio-fuse
-	 kdePackages.kpat
-     kdePackages.kirigami
-     libsForQt5.kwallet-pam
-     kdePackages.sonnet
-     python3
-     cmatrix
-     neofetch
-   ];
- 
-  	programs.steam = {
-		enable = true;
-                gamescopeSession.enable = true;
+        gamescopeSession.enable = true;
 		remotePlay.openFirewall = true;
 			dedicatedServer.openFirewall = true;
 			package = pkgs.steam.override {
@@ -198,13 +106,62 @@
 			};
 	};
 
-        programs.gamemode.enable = true;
-
-  	fonts.packages = with pkgs; [
+    fonts.packages = with pkgs; [
 	   vistafonts
 	   jetbrains-mono
        corefonts
 	];
+
+    hardware = {
+      graphics = {
+        enable = true;
+		enable32Bit = true;
+        extraPackages = with pkgs; [ vaapiVdpau ];
+      };
+    };
+
+    services = {
+    xserver = {
+      enable = true;
+    };
+    displayManager.sddm.enable = true;
+    desktopManager.plasma6.enable = true;
+    };
+
+   environment.sessionVariables.NIXOS_OZONE_WL = "1";
+
+   programs.nix-ld.enable = true;
+   programs.git.enable = true;
+   programs.firefox = { enable = true; };
+   programs.java = { enable = true; };
+   programs.obs-studio.enable = true;
+
+  # List packages installed in system profile. To search, run:
+  # $ nix search wget
+  environment.systemPackages = with pkgs; [
+     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    wget
+    vscode
+    onlyoffice-desktopeditors
+    python3
+    mpv
+    teams-for-linux
+    runelite
+    kdePackages.kolourpaint
+    eww
+    dunst
+    hyprshot
+    ghc
+    libnotify
+    tutanota-desktop
+    jetbrains-toolbox
+    thunderbird
+    hypridle
+    hyprpaper
+    clipboard-jh
+    wineWowPackages.stable
+   ];
+
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
   # programs.mtr.enable = true;
@@ -214,21 +171,32 @@
   # };
 
   # List services that you want to enable:
-  environment.sessionVariables.NIXOS_OZONE_WL = "1";
-  environment.sessionVariables.MOZ_ENABLE_WAYLAND = "1";
-  environment.sessionVariables.MOZ_DISABLE_RDD_SANDBOX = "1";
-  environment.sessionVariables.NVD_BACKEND = "direct";
-
-  services.mullvad-vpn.enable = true;
-  programs.java.enable = true;
-  programs.nix-ld.enable = true;
-
-  virtualisation.libvirtd.enable = true;
-  virtualisation.libvirtd.qemu.ovmf.enable = true;
-  programs.virt-manager.enable = true;
 
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
+
+    security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+    # If you want to use JACK applications, uncomment this
+    #jack.enable = true;
+  };
+
+  services.printing.enable = true;
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+    openFirewall = true;
+  };
+
+  virtualisation.libvirtd.enable = true;
+  programs.virt-manager.enable = true;
+  services.mullvad-vpn = { enable = true; package = pkgs.mullvad-vpn; };
+
+  environment.sessionVariables.MOZ_ENABLE_WAYLAND = "1";
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
@@ -248,7 +216,8 @@
   # even if you've upgraded your system to a new NixOS release.
   #
   # This value does NOT affect the Nixpkgs version your packages and OS are pulled from,
-  # so changing it will NOT upgrade your system.
+  # so changing it will NOT upgrade your system - see https://nixos.org/manual/nixos/stable/#sec-upgrading for how
+  # to actually do that.
   #
   # This value being lower than the current NixOS release does NOT mean your system is
   # out of date, out of support, or vulnerable.
@@ -257,7 +226,7 @@
   # and migrated your data accordingly.
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
-  system.stateVersion = "23.11"; # Did you read the comment?
+  system.stateVersion = "24.05"; # Did you read the comment?
 
 }
 
