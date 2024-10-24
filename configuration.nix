@@ -30,9 +30,10 @@
   # Set your time zone.
   time.timeZone = "Europe/Vilnius";
 
-  	xdg.portal = {
-		enable = true;
-	};
+  xdg.portal = {
+    enable = true;
+    wlr.enable = true;
+  };
 
 
   users.defaultUserShell = pkgs.nushell;
@@ -78,7 +79,6 @@
      extraGroups = [ "wheel" "libvirtd" ]; # Enable ‘sudo’ for the user.
      packages = with pkgs; [
        tree
-       flameshot
        vesktop
        htop
        neofetch
@@ -116,16 +116,22 @@
       graphics = {
         enable = true;
 		enable32Bit = true;
-        extraPackages = with pkgs; [ vaapiVdpau ];
+        extraPackages = with pkgs; [ nvidia-vaapi-driver vaapiVdpau ];
       };
     };
 
     services = {
-    xserver = {
+    desktopManager.plasma6 = {
       enable = true;
+      enableQt5Integration = true; #disable for qt6 full version
     };
-    displayManager.sddm.enable = true;
-    desktopManager.plasma6.enable = true;
+    displayManager = {
+      defaultSession = "plasma";
+      sddm = {
+        enable = true;
+        wayland.enable = true;
+        };
+      };
     };
 
    environment.sessionVariables.NIXOS_OZONE_WL = "1";
@@ -139,11 +145,10 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    vim
     wget
     vscode
     onlyoffice-desktopeditors
-    python3
     mpv
     teams-for-linux
     runelite
@@ -157,9 +162,9 @@
     jetbrains-toolbox
     thunderbird
     hypridle
-    hyprpaper
     clipboard-jh
     wineWowPackages.stable
+    zoom-us
    ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -185,6 +190,33 @@
     #jack.enable = true;
   };
 
+    # Load nvidia driver for Xorg and Wayland
+  services.xserver.videoDrivers = ["nvidia"];
+
+  hardware.nvidia = {
+
+    # Modesetting is required.
+    modesetting.enable = true;
+
+    powerManagement.enable = false;
+
+    powerManagement.finegrained = false;
+
+    open = false;
+
+    nvidiaSettings = true;
+
+    package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
+      version = "565.57.01";
+      url = "https://us.download.nvidia.com/XFree86/Linux-x86_64/565.57.01/NVIDIA-Linux-x86_64-565.57.01.run";
+      sha256_64bit = "sha256-buvpTlheOF6IBPWnQVLfQUiHv4GcwhvZW3Ks0PsYLHo=";
+      sha256_aarch64 = "sha256-s8ZAVKvRNXpjxRYqM3E5oss5FdqW+tv1qQC2pDjfG+s=";
+      openSha256 = "sha256-/32Zf0dKrofTmPZ3Ratw4vDM7B+OgpC4p7s+RHUjCrg=";
+      settingsSha256 = "sha256-kQsvDgnxis9ANFmwIwB7HX5MkIAcpEEAHc8IBOLdXvk=";
+      persistencedSha256 = "sha256-E2J2wYYyRu7Kc3MMZz/8ZIemcZg68rkzvqEwFAL3fFs=";
+    };
+  };
+
   services.printing.enable = true;
   services.avahi = {
     enable = true;
@@ -196,7 +228,10 @@
   programs.virt-manager.enable = true;
   services.mullvad-vpn = { enable = true; package = pkgs.mullvad-vpn; };
 
-  environment.sessionVariables.MOZ_ENABLE_WAYLAND = "1";
+  #environment.sessionVariables.MOZ_ENABLE_WAYLAND = "1";
+  environment.sessionVariables.NVD_BACKEND = "direct";
+  environment.sessionVariables.LIBVA_DRIVER_NAME = "nvidia";
+  environment.sessionVariables.MOZ_DISABLE_RDD_SANDBOX = "1";
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
