@@ -32,7 +32,7 @@
 
   xdg.portal = {
     enable = true;
-    wlr.enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal ];
   };
 
 
@@ -79,7 +79,6 @@
      extraGroups = [ "wheel" "libvirtd" ]; # Enable ‘sudo’ for the user.
      packages = with pkgs; [
        tree
-       vesktop
        htop
        neofetch
        kitty
@@ -116,14 +115,14 @@
       graphics = {
         enable = true;
 		enable32Bit = true;
-        extraPackages = with pkgs; [ nvidia-vaapi-driver vaapiVdpau ];
+        extraPackages = with pkgs; [ vaapiIntel libvdpau-va-gl nvidia-vaapi-driver ];
       };
     };
 
     services = {
     desktopManager.plasma6 = {
       enable = true;
-      enableQt5Integration = true; #disable for qt6 full version
+      enableQt5Integration = true;
     };
     displayManager = {
       defaultSession = "plasma";
@@ -147,7 +146,7 @@
   environment.systemPackages = with pkgs; [
     vim
     wget
-    vscode
+    vscodium
     onlyoffice-desktopeditors
     mpv
     teams-for-linux
@@ -161,10 +160,16 @@
     tutanota-desktop
     jetbrains-toolbox
     thunderbird
+    obsidian
     hypridle
     clipboard-jh
     wineWowPackages.stable
     zoom-us
+    discord
+    yt-dlp
+    freetube
+    python3
+    unrar
    ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -208,13 +213,13 @@
 
     package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
       version = "565.57.01";
-      url = "https://us.download.nvidia.com/XFree86/Linux-x86_64/565.57.01/NVIDIA-Linux-x86_64-565.57.01.run";
       sha256_64bit = "sha256-buvpTlheOF6IBPWnQVLfQUiHv4GcwhvZW3Ks0PsYLHo=";
-      sha256_aarch64 = "sha256-s8ZAVKvRNXpjxRYqM3E5oss5FdqW+tv1qQC2pDjfG+s=";
-      openSha256 = "sha256-/32Zf0dKrofTmPZ3Ratw4vDM7B+OgpC4p7s+RHUjCrg=";
-      settingsSha256 = "sha256-kQsvDgnxis9ANFmwIwB7HX5MkIAcpEEAHc8IBOLdXvk=";
-      persistencedSha256 = "sha256-E2J2wYYyRu7Kc3MMZz/8ZIemcZg68rkzvqEwFAL3fFs=";
+      sha256_aarch64 = lib.fakeSha256;
+      openSha256 = lib.fakeSha256;
+      settingsSha256 = "sha256-H7uEe34LdmUFcMcS6bz7sbpYhg9zPCb/5AmZZFTx1QA=";
+      persistencedSha256 = lib.fakeSha256;
     };
+
   };
 
   services.printing.enable = true;
@@ -229,6 +234,8 @@
   services.mullvad-vpn = { enable = true; package = pkgs.mullvad-vpn; };
 
   #environment.sessionVariables.MOZ_ENABLE_WAYLAND = "1";
+  environment.sessionVariables.__GLX_VENDOR_LIBRARY_NAME = "nvidia";
+  environment.sessionVariables.GBM_BACKEND = "nvidia-drm";
   environment.sessionVariables.NVD_BACKEND = "direct";
   environment.sessionVariables.LIBVA_DRIVER_NAME = "nvidia";
   environment.sessionVariables.MOZ_DISABLE_RDD_SANDBOX = "1";
