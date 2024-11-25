@@ -16,11 +16,6 @@
   # Use the systemd-boot EFI boot loader.
     boot.loader.systemd-boot.enable = true;
     boot.loader.efi.canTouchEfiVariables = true;
-
-    programs.hyprland = {
-     enable = true;
-     xwayland.enable = true;
-    }; 
     
   # networking.hostName = "nixos"; # Define your hostname.
   # Pick only one of the below networking options.
@@ -76,7 +71,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
    users.users.jesse = {
      isNormalUser = true;
-     extraGroups = [ "wheel" "libvirtd" ]; # Enable ‘sudo’ for the user.
+     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
      packages = with pkgs; [
        tree
        htop
@@ -115,7 +110,7 @@
       graphics = {
         enable = true;
 		enable32Bit = true;
-        extraPackages = with pkgs; [ vaapiIntel libvdpau-va-gl nvidia-vaapi-driver ];
+        extraPackages = with pkgs; [ nvidia-vaapi-driver ];
       };
     };
 
@@ -137,9 +132,9 @@
 
    programs.nix-ld.enable = true;
    programs.git.enable = true;
-   programs.firefox = { enable = true; };
-   programs.java = { enable = true; };
-   programs.obs-studio.enable = true;
+   #programs.firefox = { enable = true; };
+   #programs.java = { enable = true; };
+   #programs.obs-studio.enable = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
@@ -147,27 +142,7 @@
     vim
     wget
     vscodium
-    onlyoffice-desktopeditors
     mpv
-    teams-for-linux
-    runelite
-    kdePackages.kolourpaint
-    eww
-    dunst
-    hyprshot
-    ghc
-    libnotify
-    tutanota-desktop
-    jetbrains-toolbox
-    thunderbird
-    obsidian
-    hypridle
-    clipboard-jh
-    wineWowPackages.stable
-    zoom-us
-    discord
-    yt-dlp
-    freetube
     python3
     unrar
    ];
@@ -211,14 +186,7 @@
 
     nvidiaSettings = true;
 
-    package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-      version = "565.57.01";
-      sha256_64bit = "sha256-buvpTlheOF6IBPWnQVLfQUiHv4GcwhvZW3Ks0PsYLHo=";
-      sha256_aarch64 = lib.fakeSha256;
-      openSha256 = lib.fakeSha256;
-      settingsSha256 = "sha256-H7uEe34LdmUFcMcS6bz7sbpYhg9zPCb/5AmZZFTx1QA=";
-      persistencedSha256 = lib.fakeSha256;
-    };
+    package = config.boot.kernelPackages.nvidiaPackages.beta;
 
   };
 
@@ -229,9 +197,9 @@
     openFirewall = true;
   };
 
-  virtualisation.libvirtd.enable = true;
-  programs.virt-manager.enable = true;
-  services.mullvad-vpn = { enable = true; package = pkgs.mullvad-vpn; };
+  #virtualisation.libvirtd.enable = true;
+  #programs.virt-manager.enable = true;
+  #services.mullvad-vpn = { enable = true; package = pkgs.mullvad-vpn; };
 
   #environment.sessionVariables.MOZ_ENABLE_WAYLAND = "1";
   environment.sessionVariables.__GLX_VENDOR_LIBRARY_NAME = "nvidia";
@@ -268,7 +236,7 @@
   # and migrated your data accordingly.
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
-  system.stateVersion = "24.05"; # Did you read the comment?
+  system.stateVersion = "24.11"; # Did you read the comment?
 
 }
 
