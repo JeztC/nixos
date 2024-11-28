@@ -13,6 +13,7 @@
   nixpkgs.config.allowUnfree = true; # Sorry Stallman :(
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
+# Enables GRUB.
 boot.loader = {
   efi = {
     canTouchEfiVariables = false;
@@ -25,6 +26,7 @@ boot.loader = {
   };
 
 
+  # The most obvious choice for hostname.
   networking.hostName = "matrix";
 
   # Pick only one of the below networking options.
@@ -49,6 +51,7 @@ boot.loader = {
    users.users.jesse = {
      isNormalUser = true;
      extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+     # All user packages
      packages = with pkgs; [
        tree
        htop
@@ -115,6 +118,7 @@ boot.loader = {
 
    systemd.services.lactd.enable = true;
 
+  # All system packages.
   environment.systemPackages = with pkgs; [
     vim
     wget
@@ -139,6 +143,7 @@ boot.loader = {
     pulse.enable = true;
   };
 
+  # NVIDIA stuff.
   services.xserver.videoDrivers = ["nvidia"];
 
   hardware.nvidia = {
