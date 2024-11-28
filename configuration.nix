@@ -10,7 +10,7 @@
       ./hardware-configuration.nix
     ];
 
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.allowUnfree = true; # Sorry Stallman :(
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
 boot.loader = {
