@@ -11,8 +11,8 @@
   boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
   boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelParams = [ "nvidia.NVreg_EnableGpuFirmware=0" ];
+  boot.kernelPackages = pkgs.linuxPackages_zen;
+  boot.kernelParams = [ "nvidia.NVreg_EnableGpuFirmware=0" "nvidia-drm.fbdev=1" ];
 
   boot.supportedFilesystems = [ "ntfs" ];
   boot.kernel.sysctl."kernel.sysrq" = 1;
