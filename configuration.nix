@@ -110,6 +110,7 @@ boot.loader = {
 
    environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
+   programs.dconf.enable = true;
    programs.nix-ld.enable = true;
    programs.git.enable = true;
    programs.firefox.enable = true;
@@ -125,14 +126,16 @@ boot.loader = {
     vscodium-fhs
     mpv
     python3
-    libreoffice-qt-fresh
+    libreoffice-fresh
     thunderbird-latest
+    teams-for-linux
     unrar
     discord
     godot_4-mono
     jetbrains.pycharm-community-bin
     jetbrains.idea-community-bin
     lact
+    libvoikko
    ];
 
     security.rtkit.enable = true;
@@ -142,6 +145,9 @@ boot.loader = {
     alsa.support32Bit = true;
     pulse.enable = true;
   };
+
+  hardware.openrazer.users = ["jesse"];
+  hardware.openrazer.enable = true;
 
   # NVIDIA stuff.
   services.xserver.videoDrivers = ["nvidia"];
