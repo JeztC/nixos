@@ -38,7 +38,7 @@ boot.loader = {
 
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal ];
+    extraPortals = [ pkgs.xdg-desktop-portal-kde ];
   };
 
 
@@ -126,16 +126,29 @@ boot.loader = {
     vscodium-fhs
     mpv
     python3
-    libreoffice-fresh
+    libreoffice-qt6-fresh
     thunderbird-latest
     teams-for-linux
     unrar
     discord
+    discord-canary
     godot_4-mono
     jetbrains.pycharm-community-bin
+    jetbrains.webstorm
     jetbrains.idea-community-bin
     lact
-    libvoikko
+    hunspell
+    hunspellDicts.sv_FI
+    (brave.override {
+          # Some of these flags correspond to chrome://flags
+          commandLineArgs = [
+            # Correct fractional scaling.
+            "--ozone-platform-hint=wayland"
+            # Hardware video encoding on Chrome on Linux.
+            # See chrome://gpu to verify.
+            "--enable-features=AcceleratedVideoDecodeLinuxGL,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks"
+          ];
+        })
    ];
 
     security.rtkit.enable = true;
@@ -168,6 +181,12 @@ boot.loader = {
 
   };
 
+  qt = {
+    enable = true;
+    platformTheme = "kde";
+    style = "breeze";
+  };
+
   services.printing.enable = true;
   services.avahi = {
     enable = true;
@@ -180,6 +199,7 @@ boot.loader = {
   services.mullvad-vpn = { enable = true; package = pkgs.mullvad-vpn; };
 
   environment.sessionVariables.QT_QPA_PLATFORMTHEME = "kde";
+  environment.sessionVariables.LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.zlib}/lib";
   environment.sessionVariables.__GLX_VENDOR_LIBRARY_NAME = "nvidia";
   environment.sessionVariables.GBM_BACKEND = "nvidia-drm";
   environment.sessionVariables.NVD_BACKEND = "direct";
