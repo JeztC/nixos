@@ -22,6 +22,8 @@ boot.loader = {
       efiSupport = true;
       efiInstallAsRemovable = true;
       device = "nodev";
+      splashImage = null;
+      theme = "${pkgs.kdePackages.breeze-grub}/grub/themes/breeze";
     };
   };
 
@@ -138,6 +140,7 @@ boot.loader = {
     jetbrains.idea-community-bin
     lact
     hunspell
+    kdePackages.plasma-integration
     hunspellDicts.sv_FI
     (brave.override {
           # Some of these flags correspond to chrome://flags
@@ -177,14 +180,15 @@ boot.loader = {
 
     nvidiaSettings = true;
 
-    package = config.boot.kernelPackages.nvidiaPackages.beta;
+    package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
+      version = "565.77";
+      sha256_64bit = "sha256-CnqnQsRrzzTXZpgkAtF7PbH9s7wbiTRNcM0SPByzFHw=";
+      sha256_aarch64 = lib.fakeSha256;
+      openSha256 = lib.fakeSha256;
+      settingsSha256 = "sha256-VUetj3LlOSz/LB+DDfMCN34uA4bNTTpjDrb6C6Iwukk=";
+      persistencedSha256 = lib.fakeSha256;
+    };
 
-  };
-
-  qt = {
-    enable = true;
-    platformTheme = "kde";
-    style = "breeze";
   };
 
   services.printing.enable = true;
