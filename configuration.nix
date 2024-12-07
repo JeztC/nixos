@@ -115,7 +115,7 @@ boot.loader = {
    programs.dconf.enable = true;
    programs.nix-ld.enable = true;
    programs.git.enable = true;
-   programs.firefox.enable = true;
+   programs.firefox = { enable = true; package = pkgs.firefox-devedition-bin; };
    programs.java = { enable = true; package = pkgs.jre8; };
    programs.obs-studio.enable = true;
 
