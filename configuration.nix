@@ -10,7 +10,7 @@
       ./hardware-configuration.nix
     ];
 
-  nixpkgs.config.allowUnfree = true; # Sorry Stallman :(
+  nixpkgs.config.allowUnfree = true; # Sorry Stallman (⸝⸝⸝O﹏ O⸝⸝⸝)
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
 # Enables GRUB.
@@ -59,6 +59,7 @@ boot.loader = {
        htop
        neofetch
        cmatrix
+       # Hide your eyes!
            (microsoft-edge.override {
           # Some of these flags correspond to chrome://flags
           commandLineArgs = [
@@ -73,6 +74,7 @@ boot.loader = {
      ];
    };
 
+   # But hey, at least it's Valve right?
      	programs.steam = {
 		enable = true;
         gamescopeSession.enable = true;
@@ -145,6 +147,7 @@ boot.loader = {
     discord
     discord-canary
     godot_4-mono
+    kdePackages.plasma-browser-integration
     jetbrains.pycharm-community-bin
     jetbrains.webstorm
     jetbrains.idea-community-bin
@@ -187,6 +190,7 @@ boot.loader = {
 
     powerManagement.finegrained = false;
 
+    # Oh noo proprietary..
     open = false;
 
     nvidiaSettings = true;
@@ -209,8 +213,6 @@ boot.loader = {
     openFirewall = true;
   };
 
-  #virtualisation.libvirtd.enable = true;
-  #programs.virt-manager.enable = true;
   services.mullvad-vpn = { enable = true; package = pkgs.mullvad-vpn; };
 
   environment.sessionVariables.QT_QPA_PLATFORMTHEME = "kde";
