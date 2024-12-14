@@ -59,8 +59,17 @@ boot.loader = {
        htop
        neofetch
        cmatrix
+           (microsoft-edge.override {
+          # Some of these flags correspond to chrome://flags
+          commandLineArgs = [
+            # Correct fractional scaling.
+            "--ozone-platform-hint=wayland"
+            # Hardware video encoding on Chrome on Linux.
+            # See chrome://gpu to verify.
+            "--enable-features=AcceleratedVideoDecodeLinuxGL,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks"
+          ];
+        })
        runelite
-       microsoft-edge # Fuck off bro
      ];
    };
 
@@ -92,7 +101,7 @@ boot.loader = {
       graphics = {
         enable = true;
 		enable32Bit = true;
-        extraPackages = with pkgs; [ nvidia-vaapi-driver ];
+        extraPackages = with pkgs; [ vaapiVdpau nvidia-vaapi-driver ];
       };
     };
 
@@ -128,6 +137,7 @@ boot.loader = {
     vscodium-fhs
     mpv
     python3
+    kdePackages.kolourpaint
     libreoffice-qt6-fresh
     thunderbird-latest
     teams-for-linux
@@ -138,9 +148,10 @@ boot.loader = {
     jetbrains.pycharm-community-bin
     jetbrains.webstorm
     jetbrains.idea-community-bin
+    jetbrains.rider
     lact
+    obsidian
     hunspell
-    kdePackages.plasma-integration
     hunspellDicts.sv_FI
     (brave.override {
           # Some of these flags correspond to chrome://flags
