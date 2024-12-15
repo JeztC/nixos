@@ -141,12 +141,13 @@ boot.loader = {
     python3
     kdePackages.kolourpaint
     libreoffice-qt6-fresh
+    github-desktop
     thunderbird-latest
     teams-for-linux
     unrar
     discord
     discord-canary
-    godot_4-mono
+    #godot_4-mono
     kdePackages.plasma-browser-integration
     jetbrains.pycharm-community-bin
     jetbrains.webstorm
@@ -216,7 +217,7 @@ boot.loader = {
   services.mullvad-vpn = { enable = true; package = pkgs.mullvad-vpn; };
 
   environment.sessionVariables.QT_QPA_PLATFORMTHEME = "kde";
-  environment.sessionVariables.LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.zlib}/lib";
+  environment.sessionVariables.LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.zlib}/lib:${pkgs.libGL}/lib";
   environment.sessionVariables.__GLX_VENDOR_LIBRARY_NAME = "nvidia";
   environment.sessionVariables.GBM_BACKEND = "nvidia-drm";
   environment.sessionVariables.NVD_BACKEND = "direct";
