@@ -146,8 +146,10 @@ boot.loader = {
     teams-for-linux
     unrar
     discord
+    kdePackages.kcolorpicker
     discord-canary
     #godot_4-mono
+    blender
     kdePackages.plasma-browser-integration
     jetbrains.pycharm-community-bin
     jetbrains.webstorm
