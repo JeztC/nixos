@@ -13,20 +13,11 @@
   nixpkgs.config.allowUnfree = true; # Sorry Stallman (⸝⸝⸝O﹏ O⸝⸝⸝)
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
-# Enables GRUB.
-boot.loader = {
-  efi = {
-    canTouchEfiVariables = false;
+  boot.loader = {
+    systemd-boot.enable = true;
+    systemd-boot.configurationLimit = 2;
+    efi.canTouchEfiVariables = true;
   };
-    grub = {
-      efiSupport = true;
-      efiInstallAsRemovable = true;
-      device = "nodev";
-      splashImage = null;
-      theme = "${pkgs.kdePackages.breeze-grub}/grub/themes/breeze";
-    };
-  };
-
 
   # The most obvious choice for hostname.
   networking.hostName = "matrix";
@@ -59,17 +50,6 @@ boot.loader = {
        htop
        neofetch
        cmatrix
-       # Hide your eyes!
-           (microsoft-edge.override {
-          # Some of these flags correspond to chrome://flags
-          commandLineArgs = [
-            # Correct fractional scaling.
-            "--ozone-platform-hint=wayland"
-            # Hardware video encoding on Chrome on Linux.
-            # See chrome://gpu to verify.
-            "--enable-features=AcceleratedVideoDecodeLinuxGL,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks"
-          ];
-        })
        runelite
      ];
    };
@@ -99,11 +79,13 @@ boot.loader = {
        corefonts
 	];
 
+	fonts.fontconfig.subpixel.lcdfilter = "light";
+	fonts.fontconfig.hinting.style = "full";
+
     hardware = {
       graphics = {
         enable = true;
-		enable32Bit = true;
-        extraPackages = with pkgs; [ vaapiVdpau nvidia-vaapi-driver ];
+        extraPackages = with pkgs; [ vaapiVdpau libvdpau-va-gl nvidia-vaapi-driver ];
       };
     };
 
@@ -129,6 +111,7 @@ boot.loader = {
    programs.firefox = { enable = true; package = pkgs.firefox-devedition-bin; };
    programs.java = { enable = true; package = pkgs.jre8; };
    programs.obs-studio.enable = true;
+   programs.wireshark = { enable = true; package = pkgs.wireshark; };
 
    systemd.services.lactd.enable = true;
 
@@ -144,22 +127,26 @@ boot.loader = {
     github-desktop
     thunderbird-latest
     teams-for-linux
+    pciutils
+    toybox
     unrar
+    kitty
     discord
     kdePackages.kcolorpicker
-    discord-canary
-    #godot_4-mono
+    vesktop
     blender
+    postman
     kdePackages.plasma-browser-integration
     jetbrains.pycharm-community-bin
     jetbrains.webstorm
     jetbrains.idea-community-bin
     jetbrains.rider
     lact
+    hyprshot
     obsidian
     hunspell
     hunspellDicts.sv_FI
-    (brave.override {
+        (brave.override {
           # Some of these flags correspond to chrome://flags
           commandLineArgs = [
             # Correct fractional scaling.
@@ -182,31 +169,15 @@ boot.loader = {
   hardware.openrazer.users = ["jesse"];
   hardware.openrazer.enable = true;
 
-  # NVIDIA stuff.
   services.xserver.videoDrivers = ["nvidia"];
 
   hardware.nvidia = {
-
     modesetting.enable = true;
-
     powerManagement.enable = true;
-
     powerManagement.finegrained = false;
-
-    # Oh noo proprietary..
     open = false;
-
     nvidiaSettings = true;
-
-    package = config.boot.kernelPackages.nvidiaPackages.mkDriver {
-      version = "565.77";
-      sha256_64bit = "sha256-CnqnQsRrzzTXZpgkAtF7PbH9s7wbiTRNcM0SPByzFHw=";
-      sha256_aarch64 = lib.fakeSha256;
-      openSha256 = lib.fakeSha256;
-      settingsSha256 = "sha256-VUetj3LlOSz/LB+DDfMCN34uA4bNTTpjDrb6C6Iwukk=";
-      persistencedSha256 = lib.fakeSha256;
-    };
-
+    package = config.boot.kernelPackages.nvidiaPackages.beta;
   };
 
   services.printing.enable = true;
@@ -219,13 +190,13 @@ boot.loader = {
   services.mullvad-vpn = { enable = true; package = pkgs.mullvad-vpn; };
 
   environment.sessionVariables.QT_QPA_PLATFORMTHEME = "kde";
+  environment.sessionVariables.FREETYPE_PROPERTIES="cff:no-stem-darkening=0 autofitter:no-stem-darkening=0";
   environment.sessionVariables.DOTNET_SYSTEM_GLOBALIZATION_INVARIANT = "1";
   environment.sessionVariables.LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.zlib}/lib:${pkgs.libGL}/lib";
-  environment.sessionVariables.__GLX_VENDOR_LIBRARY_NAME = "nvidia";
-  environment.sessionVariables.GBM_BACKEND = "nvidia-drm";
+  #environment.sessionVariables.__GLX_VENDOR_LIBRARY_NAME = "nvidia";
+  environment.sessionVariables.WEBKIT_DISABLE_DMABUF_RENDERER = "1";
   environment.sessionVariables.NVD_BACKEND = "direct";
-  environment.sessionVariables.LIBVA_DRIVER_NAME = "nvidia";
-  environment.sessionVariables.MOZ_DISABLE_RDD_SANDBOX = "1";
+  #environment.sessionVariables.LIBVA_DRIVER_NAME = "nvidia";
 
   system.stateVersion = "24.05";
 
