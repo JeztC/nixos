@@ -9,18 +9,47 @@
     ];
 
   boot.initrd.availableKernelModules = [ "nvme" "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" ];
-  boot.kernelModules = [ "kvm-amd" ];
   boot.extraModulePackages = [ ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.plymouth.enable = true;
-  boot.kernelParams = [ "nvidia.NVreg_EnableGpuFirmware=0" "nvidia-drm.fbdev=1" ];
-  boot.initrd.kernelModules = [ "nvidia" ];
+    boot = {
 
+    plymouth = {
+      enable = true;
+      theme = "rings";
+      themePackages = with pkgs; [
+        (adi1090x-plymouth-themes.override {
+          selected_themes = [ "rings" ];
+        })
+      ];
+    };
+
+    kernelParams = [
+      "quiet"
+      "splash"
+      "boot.shell_on_fail"
+      "nvidia.NVreg_EnableGpuFirmware=0"
+      "nvidia.NVreg_RegistryDwords=“RMForcePstate=5"
+      "nvidia-drm.fbdev=1"
+      "loglevel=3"
+      "rd.systemd.show_status=false"
+      "rd.udev.log_level=3"
+      "udev.log_priority=3"
+    ];
+
+    # Enable "Silent Boot"
+    consoleLogLevel = 0;
+    # Hide the OS choice for bootloaders.
+    # It's still possible to open the bootloader list by pressing any key
+    # It will just not appear on screen unless a key is pressed
+    loader.timeout = 0;
+
+  };
+  boot.initrd.kernelModules = [ "nvidia" ];
   boot.supportedFilesystems = [ "ntfs" ];
   boot.kernel.sysctl."kernel.sysrq" = 1;
 
   boot.tmp.cleanOnBoot = true;
- 
+
   fileSystems."/" =
     { device = "/dev/disk/by-label/NIXROOT";
       fsType = "ext4";
