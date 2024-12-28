@@ -34,12 +34,6 @@
     extraPortals = [ pkgs.xdg-desktop-portal-kde ];
   };
 
-  programs.hyprland = {
-      enable = true;
-      xwayland.enable = true;
-  };
-
-
   users.defaultUserShell = pkgs.nushell;
 
   security.sudo.wheelNeedsPassword = false;
@@ -116,16 +110,16 @@
    programs.firefox = { enable = true; package = pkgs.firefox-devedition-bin; };
    programs.java = { enable = true; package = pkgs.jdk11; };
    programs.obs-studio.enable = true;
+   programs.vim.enable = true;
    programs.wireshark = { enable = true; package = pkgs.wireshark; };
-
    systemd.services.lactd.enable = true;
 
   # All system packages.
   environment.systemPackages = with pkgs; [
-    vim
     wget
-    vscodium-fhs
     mpv
+    vscodium-fhs
+
     python3
     kdePackages.kolourpaint
     libreoffice-qt6-fresh
@@ -140,7 +134,7 @@
     discord
     kdePackages.partitionmanager
     kdePackages.kcolorpicker
-    vesktop
+    discord-canary
     blender
     postman
     kdePackages.plasma-browser-integration
@@ -153,14 +147,14 @@
     obsidian
     hunspell
     hunspellDicts.sv_FI
-        (brave.override {
+    (brave.override {
           # Some of these flags correspond to chrome://flags
           commandLineArgs = [
             # Correct fractional scaling.
             "--ozone-platform-hint=wayland"
             # Hardware video encoding on Chrome on Linux.
             # See chrome://gpu to verify.
-            "--enable-features=AcceleratedVideoDecodeLinuxGL,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks"
+             "--enable-features=AcceleratedVideoDecodeLinuxGL,AcceleratedVideoDecodeLinuxZeroCopyGL,VaapiOnNvidiaGPUs,VaapiIgnoreDriverChecks"
           ];
         })
    ];
@@ -176,8 +170,7 @@
   hardware.openrazer.users = ["jesse"];
   hardware.openrazer.enable = true;
 
-  services.xserver.videoDrivers = ["nvidia"];
-
+  services.xserver.videoDrivers = lib.mkDefault [ "nvidia" ];
   hardware.nvidia = {
     modesetting.enable = true;
     powerManagement.enable = true;
@@ -199,11 +192,9 @@
   environment.sessionVariables.QT_QPA_PLATFORMTHEME = "kde";
   environment.sessionVariables.FREETYPE_PROPERTIES="cff:no-stem-darkening=0 autofitter:no-stem-darkening=0";
   environment.sessionVariables.DOTNET_SYSTEM_GLOBALIZATION_INVARIANT = "1";
-  environment.sessionVariables.LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib:${pkgs.zlib}/lib:${pkgs.libGL}/lib";
-  #environment.sessionVariables.__GLX_VENDOR_LIBRARY_NAME = "nvidia";
-  environment.sessionVariables.WEBKIT_DISABLE_DMABUF_RENDERER = "1";
+  environment.sessionVariables.__GLX_VENDOR_LIBRARY_NAME = "nvidia";
   environment.sessionVariables.NVD_BACKEND = "direct";
-  #environment.sessionVariables.LIBVA_DRIVER_NAME = "nvidia";
+  environment.sessionVariables.WEBKIT_DISABLE_DMABUF_RENDERER = "1";
 
   system.stateVersion = "24.05";
 
