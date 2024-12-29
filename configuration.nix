@@ -196,6 +196,6 @@
   environment.sessionVariables.NVD_BACKEND = "direct";
   environment.sessionVariables.WEBKIT_DISABLE_DMABUF_RENDERER = "1";
 
-  system.stateVersion = "24.05";
+  system.stateVersion = "24.11";
 
 }
