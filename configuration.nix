@@ -15,7 +15,6 @@
 
   boot.loader = {
     systemd-boot.enable = true;
-    systemd-boot.configurationLimit = 2;
     efi.canTouchEfiVariables = true;
   };
 
@@ -31,7 +30,6 @@
 
   xdg.portal = {
     enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-kde ];
   };
 
   users.defaultUserShell = pkgs.nushell;
@@ -105,9 +103,15 @@
    environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
    programs.dconf.enable = true;
-   programs.nix-ld.enable = true;
-   programs.git.enable = true;
-   programs.firefox = { enable = true; package = pkgs.firefox-devedition-bin; };
+   programs.nix-ld = {
+      enable = true;
+      libraries = with pkgs; [ libGL ];
+   };
+
+   programs.git = {
+    enable = true;
+   };
+
    programs.java = { enable = true; package = pkgs.jdk11; };
    programs.obs-studio.enable = true;
    programs.vim.enable = true;
@@ -119,7 +123,6 @@
     wget
     mpv
     vscodium-fhs
-
     python3
     kdePackages.kolourpaint
     libreoffice-qt6-fresh
@@ -129,21 +132,14 @@
     pciutils
     toybox
     unrar
-    jre8
-    kitty
     discord
     kdePackages.partitionmanager
     kdePackages.kcolorpicker
+    jetbrains.webstorm
     discord-canary
     blender
     postman
-    kdePackages.plasma-browser-integration
-    jetbrains.pycharm-community-bin
-    jetbrains.webstorm
-    jetbrains.idea-community-bin
-    jetbrains.rider
     lact
-    hyprshot
     obsidian
     hunspell
     hunspellDicts.sv_FI
@@ -159,7 +155,7 @@
         })
    ];
 
-    security.rtkit.enable = true;
+  security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -170,6 +166,7 @@
   hardware.openrazer.users = ["jesse"];
   hardware.openrazer.enable = true;
 
+  hardware.nvidia-container-toolkit.enable = true;
   services.xserver.videoDrivers = lib.mkDefault [ "nvidia" ];
   hardware.nvidia = {
     modesetting.enable = true;
@@ -187,7 +184,7 @@
     openFirewall = true;
   };
 
-  services.mullvad-vpn = { enable = true; package = pkgs.mullvad-vpn; };
+  services.mullvad-vpn = { enable = true; package = (pkgs.mullvad-vpn); };
 
   environment.sessionVariables.QT_QPA_PLATFORMTHEME = "kde";
   environment.sessionVariables.FREETYPE_PROPERTIES="cff:no-stem-darkening=0 autofitter:no-stem-darkening=0";
