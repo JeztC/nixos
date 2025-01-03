@@ -122,7 +122,8 @@
   environment.systemPackages = with pkgs; [
     wget
     mpv
-    vscodium-fhs
+    vscode-fhs
+    wineWowPackages.staging
     python3
     kdePackages.kolourpaint
     libreoffice-qt6-fresh
