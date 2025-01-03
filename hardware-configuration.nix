@@ -15,10 +15,10 @@
 
     plymouth = {
       enable = true;
-      theme = "rings";
+      theme = "dark_planet";
       themePackages = with pkgs; [
         (adi1090x-plymouth-themes.override {
-          selected_themes = [ "rings" ];
+          selected_themes = [ "dark_planet" ];
         })
       ];
     };
