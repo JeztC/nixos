@@ -10,7 +10,7 @@
       ./hardware-configuration.nix
     ];
 
-  nixpkgs.config.allowUnfree = true; # Sorry Stallman (⸝⸝⸝O﹏ O⸝⸝⸝)
+  nixpkgs.config.allowUnfree = true; # Sorry Stallman, I love some non-free software (⸝⸝⸝O﹏ O⸝⸝⸝)
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   boot.loader = {
@@ -51,7 +51,7 @@
      ];
    };
 
-   # But hey, at least it's Valve right?
+   # Valve is the BEST, thank you Gabe.
      	programs.steam = {
 		enable = true;
         gamescopeSession.enable = true;
@@ -59,6 +59,7 @@
 			dedicatedServer.openFirewall = true;
 			package = pkgs.steam.override {
 				extraPkgs = pkgs: with pkgs; [
+				    # Some packages to make it work good and mangohud for game overlay =)
 					mangohud
 					libpng
 					libpulseaudio
@@ -115,6 +116,7 @@
    programs.java = { enable = true; package = pkgs.jdk11; };
    programs.obs-studio.enable = true;
    programs.vim.enable = true;
+   programs.npm.enable = true;
    programs.wireshark = { enable = true; package = pkgs.wireshark; };
    systemd.services.lactd.enable = true;
 
@@ -122,7 +124,7 @@
   environment.systemPackages = with pkgs; [
     wget
     mpv
-    vscode-fhs
+    vscodium
     wineWowPackages.staging
     python3
     kdePackages.kolourpaint
