@@ -10,7 +10,7 @@
       ./hardware-configuration.nix
     ];
 
-  nixpkgs.config.allowUnfree = true; # Sorry Stallman, I love some non-free software (⸝⸝⸝O﹏ O⸝⸝⸝)
+  nixpkgs.config.allowUnfree = true; # Sorry Stallman (⸝⸝⸝O﹏ O⸝⸝⸝)
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   boot.loader = {
@@ -88,18 +88,15 @@
     };
 
     services = {
-    desktopManager.plasma6 = {
-      enable = true;
-      enableQt5Integration = true;
-    };
-    displayManager = {
-      defaultSession = "plasma";
-      sddm = {
-        enable = true;
-        wayland.enable = true;
+      desktopManager.plasma6.enable = true;
+      displayManager = {
+        defaultSession = "plasma";
+        sddm = {
+          enable = true;
+          wayland.enable = true;
+          };
         };
       };
-    };
 
    environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
@@ -139,6 +136,7 @@
     kdePackages.partitionmanager
     kdePackages.kcolorpicker
     jetbrains.webstorm
+    jetbrains.pycharm-community
     discord-canary
     blender
     postman
